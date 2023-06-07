@@ -8,10 +8,13 @@
 </head>
 {{-- this is a comment --}}
 <body>
-
-    <h1>Contact App</h1>
+    <h1> <h1>Contact details </h1> </h1>
     <div>
-        <a href='{{route('admin.contacts.index')}}'>All contacts </a>
+        <a href='{{route('admin.contacts.index')}}'>Back </a>
+    </div>
+    <div>
+        <p>Name: {{ $contact['name']}} </p>
+        <p>Phone: {{ $contact['phone']}} </p>
     </div>
 </body>
 </html>

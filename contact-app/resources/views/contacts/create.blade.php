@@ -8,10 +8,9 @@
 </head>
 {{-- this is a comment --}}
 <body>
-
-    <h1>Contact App</h1>
+    <h1> Add new contacts </h1>
     <div>
-        <a href='{{route('admin.contacts.index')}}'>All contacts </a>
+        <a href='{{route('admin.contacts.index')}}'>Back</a>
     </div>
 </body>
 </html>

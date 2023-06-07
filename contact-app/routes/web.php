@@ -13,34 +13,39 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+function getContacts() {
+    return [
+        1 => ['name' => 'Name 1','phone' => '21234561' ],
+        2 => ['name' => 'Name 2','phone' => '21234562' ],
+        3 => ['name' => 'Name 3','phone' => '21234563' ],
+    ];
+}
+
 Route::get('/', function () {
-    $html = "<h1>Contact App</h1>
-    <div>
-        <a href='".route('admin.contacts.index')."'>All contacts </a>
-        <a href='".route('admin.contacts.create')."'>Add contact </a>
-        <a href='".route('admin.contacts.show',1)."'> Show contact </a>
-    </div>
-    ";
-    return $html;
-    //return view('welcome');
+    $html = "
+     ";
+    // return $html;
+    return view('welcome');
 });
 Route::prefix('admin')->name('admin.')->group(function () {
+
     Route::get('/contacts', function () {
-        //return view('welcome');
-        return "<h1> All contacts </h1>";
+        $contacts = getContacts();
+        return view('contacts.index', compact('contacts'));
     })->name('contacts.index');
 
     Route::get('/contacts/create', function () {
-        //return view('welcome');
-        return "<h1> Add new contacts </h1>";
+        return view('contacts.create');
     })->name('contacts.create');
 
     Route::get('/contacts/{id}', function ($contactId) {
-        //return view('welcome');
-        return "<h1>Contact $contactId </h1>";
-    })->whereNumber('id')
-    ->name('contacts.show');
-    //->where('id','[0-9]+');
+        $contacts = getContacts();
+        //abort_if(!isset($contacts[$contactId]),404);//returns 404 if id doesnt exist
+        abort_unless(isset($contacts[$contactId]),404);//returns 404 if id doesnt exist
+        $contact = $contacts[$contactId];
+        return view('contacts.show',)->with('contact',$contact);
+    })->name('contacts.show')
+    ->whereNumber('id');
 
     //optional param
     Route::get('/companies/{name?}', function ($company = null) {

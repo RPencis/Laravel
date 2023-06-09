@@ -1,6 +1,6 @@
-@extends('layouts.main');
+@extends('layouts.main')
 
-@section('title', 'Contact App | All contacts');
+@section('title', 'Contact App | All contacts')
 
 @section('content')
 
@@ -13,7 +13,7 @@
                             <div class="d-flex align-items-center">
                                 <h2 class="mb-0">All Contacts</h2>
                                 <div class="ml-auto">
-                                    <a href="{{ route('admin.contacts.create') }}" class="btn btn-success"><i
+                                    <a href="{{ route('contacts.create') }}" class="btn btn-success"><i
                                             class="fa fa-plus-circle"></i> Add New</a>
                                 </div>
                             </div>

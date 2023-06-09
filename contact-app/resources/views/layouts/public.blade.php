@@ -19,7 +19,7 @@
     <!-- navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand text-uppercase" href="index.html">
+            <a class="navbar-brand text-uppercase" href="/">
                 <strong>Contact</strong> App
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-toggler"
@@ -37,7 +37,7 @@
         </div>
     </nav>
 
-    @yield('content');
+    @yield('content')
 
     <footer class="py-5 footer">
         <div class="container">

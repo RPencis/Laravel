@@ -1,6 +1,6 @@
 <select class="custom-select">
-<option value="" selected>All Companies</option>
-<?php foreach($companies as $key => $company): ?>
-    <option value="{{$key}}">{{$company['name']}}</option>
-<?php endforeach; ?>
+    <option value="" selected>All Companies</option>
+    @foreach ($companies as $key => $name)
+        <option value="{{ $key }}">{{ $name }}</option>
+    @endforeach
 </select>

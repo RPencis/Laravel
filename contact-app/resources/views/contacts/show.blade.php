@@ -1,6 +1,6 @@
-@extends('layouts.main');
+@extends('layouts.main')
 
-@section('title','Contact App | Contact' . $contact['name']);
+@section('title','Contact App | Contact' . $contact['name'])
 
 @section('content')
 <main class="py-5">
@@ -59,7 +59,7 @@
                     <div class="col-md-9 offset-md-3">
                         <a href="#" class="btn btn-info">Edit</a>
                         <a href="#" class="btn btn-outline-danger">Delete</a>
-                        <a href=" {{ route('admin.contacts.index') }} " class="btn btn-outline-secondary">Cancel</a>
+                        <a href=" {{ route('contacts.index') }} " class="btn btn-outline-secondary">Cancel</a>
                     </div>
                   </div>
                 </div>

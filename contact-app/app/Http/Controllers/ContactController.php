@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Repositories\CompanyRepository;
 use Illuminate\Http\Request;
+use App\Models\Contact;
 
 class ContactController extends Controller
 {
@@ -21,7 +22,7 @@ class ContactController extends Controller
         //dd($request->sort_by);
         $companies = $company->pluck();
 
-        $contacts = $this->getContacts();
+        $contacts = Contact::latest()->get();
         return view('contacts.index', compact('contacts', 'companies'));
     }
 
@@ -32,19 +33,7 @@ class ContactController extends Controller
 
     public function show(Request $request, string $id)
     {
-        $contacts = $this->getContacts();
-        //abort_if(!isset($contacts[$contactId]),404);//returns 404 if id doesnt exist
-        abort_unless(isset($contacts[$id]), 404); //returns 404 if id doesnt exist
-        $contact = $contacts[$id];
+        $contact = Contact::findOrFail($id);
         return view('contacts.show', )->with('contact', $contact);
-    }
-
-    protected function getContacts()
-    {
-        return [
-            1 => ['id' => 1, 'name' => 'Name 1', 'phone' => '21234561'],
-            2 => ['id' => 2, 'name' => 'Name 2', 'phone' => '21234562'],
-            3 => ['id' => 3, 'name' => 'Name 3', 'phone' => '21234563'],
-        ];
     }
 }

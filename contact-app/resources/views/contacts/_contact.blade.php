@@ -1,5 +1,5 @@
 <tr>
-    <th scope="row">1</th>
+    <th scope="row">{{ $index + 1 }}</th>
     <td>{{ $contact->first_name }}</td>
     <td>{{ $contact->last_name }}</td>
     <td>{{ $contact->email }}</td>

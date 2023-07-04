@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Contact;
 use App\Repositories\CompanyRepository;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class ContactController extends Controller
 {
@@ -20,32 +19,104 @@ class ContactController extends Controller
 
     public function index(CompanyRepository $company, Request $request)
     {
-        //dd($request->sort_by);
         $companies = $company->pluck();
 
-        //$contacts = Contact::latest()->paginate(10);
+        $contacts = Contact::latest()->where(function ($query) {
+            if ($comoanyId = request()->query("company_id")) {
+                $query->where("company_id", $comoanyId);
+            }
+        })
+        ->where(function ($query){
+            if($search = request()->query('search')){
+                $query->where("first_name","LIKE","%{$search}%");
+                $query->orWhere("last_name","LIKE","%{$search}%");
+                $query->orWhere("phone","LIKE","%{$search}%");
+                $query->orWhere("email","LIKE","%{$search}%");
+                $query->orWhere("address","LIKE","%{$search}%");
+            }
+        })
+        ->paginate(10);
 
         //manual pagination
-        $contactsCollection = Contact::latest()->get();
-        $perPage = 10;
-        $currentPage = request()->query('page', 1);
-        $items = $contactsCollection->slice(($currentPage * $perPage) - $perPage, $perPage);// (1 * 10) - 10 = 0 
-        $total = $contactsCollection->count();
-        $contacts = new LengthAwarePaginator($items,$total,$perPage,$currentPage,[
-                'path' => request()->url(),
-                'query' => request()->query()
-        ]);
+        // $contactsCollection = Contact::latest()->get();
+        // $perPage = 10;
+        // $currentPage = request()->query('page', 1);
+        // $items = $contactsCollection->slice(($currentPage * $perPage) - $perPage, $perPage);// (1 * 10) - 10 = 0
+        // $total = $contactsCollection->count();
+        // $contacts = new LengthAwarePaginator($items,$total,$perPage,$currentPage,[
+        //         'path' => request()->url(),
+        //         'query' => request()->query()
+        // ]);
         return view('contacts.index', compact('contacts', 'companies'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'first_name' => 'required|string|max:50',
+            //'first_name' => ['required','string','max:50'],
+            'last_name' => 'required|string|max:50',
+            'email' => 'required|email',
+            'phone' => 'nullable',
+            'address' => 'nullable',
+            'company_id' => 'required|exists:companies,id',
+        ]);
+
+        $contact = Contact::create($request->all());
+
+        //return $contact;//return json response
+
+        return redirect()->route("contacts.index")->with('message', 'Contact has been added successfully');
     }
 
     public function create()
     {
-        return view('contacts.create');
+        $companies = $this->company->pluck();
+
+        $contact = new Contact();
+        return view('contacts.create', compact('companies', 'contact'));
     }
 
     public function show(Request $request, string $id)
     {
         $contact = Contact::findOrFail($id);
         return view('contacts.show', )->with('contact', $contact);
+    }
+
+    public function edit(Request $request, string $id)
+    {
+        $companies = $this->company->pluck();
+        $contact = Contact::findOrFail($id);
+        return view('contacts.edit', compact('companies', 'contact'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $contact = Contact::findOrFail($id);
+
+        $request->validate([
+            'first_name' => 'required|string|max:50',
+            //'first_name' => ['required','string','max:50'],
+            'last_name' => 'required|string|max:50',
+            'email' => 'required|email',
+            'phone' => 'nullable',
+            'address' => 'nullable',
+            'company_id' => 'required|exists:companies,id',
+        ]);
+
+        $contact->update($request->all());
+
+        //return $contact;//return json response
+
+        return redirect()->route("contacts.index")->with('message', 'Contact has been updated successfully');
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $contact = Contact::findOrFail($id);
+
+        $contact->delete();
+
+        return redirect()->route("contacts.index")->with('message', 'Contact has been deleted successfully');
     }
 }

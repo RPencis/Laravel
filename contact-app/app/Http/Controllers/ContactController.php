@@ -20,24 +20,11 @@ class ContactController extends Controller
     public function index(CompanyRepository $company, Request $request)
     {
         $companies = $company->pluck();
-        $query = Contact::query();
-        if(request()->query('trash')){
-            $query->onlyTrashed();
-        }
-        $contacts = $query->latest()->where(function ($query) {
-            if ($comoanyId = request()->query("company_id")) {
-                $query->where("company_id", $comoanyId);
-            }
-        })
-            ->where(function ($query) {
-                if ($search = request()->query('search')) {
-                    $query->where("first_name", "LIKE", "%{$search}%");
-                    $query->orWhere("last_name", "LIKE", "%{$search}%");
-                    $query->orWhere("phone", "LIKE", "%{$search}%");
-                    $query->orWhere("email", "LIKE", "%{$search}%");
-                    $query->orWhere("address", "LIKE", "%{$search}%");
-                }
-            })
+        
+        $contacts = Contact::allowedTrash()
+            ->allowedSorts(['first_name','last_name','email'],'-id')
+            ->allowedFilters('company_id')
+            ->allowedSearch('first_name','last_name','email')
             ->paginate(10);
 
         //manual pagination

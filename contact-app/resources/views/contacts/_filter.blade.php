@@ -1,7 +1,15 @@
 <div class="row">
-    <div class="col-md-6"></div>
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col">
+                <a href="{{ request()->fullUrlWithQuery(['trash' => false])}}" class="btn {{ !request()->query('trash') ? 'text-primary' : 'text-secondary'}}">Active</a> |
+                <a href="{{ request()->fullUrlWithQuery(['trash' => true])}}" class="btn {{ request()->query('trash') ? 'text-primary' : 'text-secondary'}}">Trashed</a>
+            </div>
+        </div>
+    </div>
     <div class="col-md-6">
         <form>
+            <input type="hidden" name="trash" value="{{ request()->query('trash')}}">
             <div class="row">
                 <div class="col">
                     @includeWhen(!empty($companies), 'contacts._company-selection')

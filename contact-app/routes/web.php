@@ -23,8 +23,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', WelcomeController::class);
 
 Route::resource('/contacts', ContactController::class);
-Route::delete('/contacts/{contact}/restore',[ContactController::class,'restore'])->name('contacts.restore');
-Route::delete('/contacts/{contact}/force-delete',[ContactController::class,'forceDelete'])->name('contacts.force-delete');
+Route::delete('/contacts/{contact}/restore',[ContactController::class,'restore'])
+    ->withTrashed()
+    ->name('contacts.restore');
+Route::delete('/contacts/{contact}/force-delete',[ContactController::class,'forceDelete'])
+    ->withTrashed()
+    ->name('contacts.force-delete');
 
 Route::resource('/companies', CompanyController::class);
 

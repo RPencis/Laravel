@@ -44,4 +44,8 @@ class Contact extends Model
 
         return $builder;
     }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

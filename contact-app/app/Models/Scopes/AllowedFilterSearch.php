@@ -2,10 +2,15 @@
 
 namespace App\Models\Scopes;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 
 trait AllowedFilterSearch
 {
+    public function scopeForUser(Builder $builder, User $user){
+        // return $builder->where('user_id',$user->id);
+        return $builder->whereBelongsTo($user);
+    }
     public function scopeAllowedSearch(Builder $builder, ...$keys)
     {
         if ($search = request()->query('search')) {

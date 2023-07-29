@@ -29,9 +29,13 @@
 
             <!-- /.navbar-header -->
             <div class="collapse navbar-collapse" id="navbar-toggler">
+                {{-- <ul class="navbar-nav">
+                    <li class="nav-item"><a href="#" class="nav-link">Companies</a></li>
+                    <li class="nav-item active"><a href="{{ route("contacts.index") }}" class="nav-link">Contacts</a></li>
+                </ul> --}}
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item mr-2"><a href="#" class="btn btn-outline-secondary">Login</a></li>
-                    <li class="nav-item"><a href="#" class="btn btn-outline-primary">Register</a></li>
+                    <li class="nav-item mr-2"><a href="{{route('login')}}" class="btn btn-outline-secondary">Login</a></li>
+                    <li class="nav-item"><a href="{{route('register')}}" class="btn btn-outline-primary">Register</a></li>
                 </ul>
             </div>
         </div>

@@ -3,29 +3,31 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ContactRequest;
+use App\Models\Company;
 use App\Models\Contact;
-use App\Repositories\CompanyRepository;
 use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
 
+    protected function userCompanies(){
+        return Company::forUser(auth()->user())->orderBy('name')->pluck('name','id');
+    }
+
     // public function __construct(CompanyRepository $company)
     // {
     //     $this->company = $company;
     // }
-    public function __construct(protected CompanyRepository $company)
-    {
-    }
 
-    public function index(CompanyRepository $company, Request $request)
+    public function index(Request $request)
     {
-        $companies = $company->pluck();
+        $companies = $this->userCompanies();
         
         $contacts = Contact::allowedTrash()
             ->allowedSorts(['first_name','last_name','email'],'-id')
             ->allowedFilters('company_id')
             ->allowedSearch('first_name','last_name','email')
+            ->forUser(auth()->user())
             ->paginate(10);
 
         //manual pagination
@@ -43,14 +45,14 @@ class ContactController extends Controller
 
     public function store(ContactRequest $request)
     {
-        $contact = Contact::create($request->all());
+        $contact = $request->user()->contacts()->create($request->all());
 
         return redirect()->route("contacts.index")->with('message', 'Contact "'.$contact->first_name.' '.$contact->last_name.'" has been added successfully');
     }
 
     public function create()
     {
-        $companies = $this->company->pluck();
+        $companies = $this->userCompanies();
 
         $contact = new Contact();
         return view('contacts.create', compact('companies', 'contact'));
@@ -63,7 +65,7 @@ class ContactController extends Controller
 
     public function edit(Contact $contact)
     {
-        $companies = $this->company->pluck();
+        $companies = $this->userCompanies();
         return view('contacts.edit', compact('companies', 'contact'));
     }
 

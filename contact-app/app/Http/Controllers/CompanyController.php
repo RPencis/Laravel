@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CompanyRequest;
+use App\Models\Company;
 use Illuminate\Http\Request;
 
 class CompanyController extends Controller
@@ -11,7 +13,13 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        //
+        $companies = Company::allowedTrash()
+            ->allowedSorts(['name', 'website', 'email'], '-id')
+            ->allowedSearch('name', 'website', 'email')
+            ->forUser(auth()->user())
+            ->paginate(10);
+
+        return view('companies.index', compact('companies'));
     }
 
     /**
@@ -19,46 +27,77 @@ class CompanyController extends Controller
      */
     public function create()
     {
-        //
+        $company = new Company();
+
+        return view('companies.create', compact('company'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CompanyRequest $request)
     {
-        //
+        $request->user()->companies()->create($request->validated());
+
+        return redirect()->route('companies.index')->with('meesage', 'Company h asbeen added successfully');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Company $company)
     {
-        //
+        return view('companies.show', compact('company'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Company $company)
     {
-        //
+        return view('companies.edit', compact('company'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(CompanyRequest $request, Company $company)
     {
-        //
+        $company->update($request->validated());
+
+        return redirect()->route('companies.index')->with('mesage', 'Company has been updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Company $company)
     {
-        //
+        $company->delete();
+
+        $redirect = request()->query('redirect');
+
+        return ($redirect ? redirect()->route($redirect) : back())
+            ->with('mesasge', 'Company has been moved to trash.')
+            ->with('undoRoute', getUndoRoute('companies.restore', $company));
+    }
+
+    public function restore(Company $company)
+    {
+        $company->restore();
+
+        return back()
+            ->with('message', 'Company has been restored from trash.')
+            ->with('undoRoute', getUndoRoute('companies.destroy', $company));
+    }
+
+    
+
+    public function forceDelete(Company $company)
+    {
+        $company->forceDelete();
+
+        return back()
+            ->with('message', 'Company has been removed permanently');
     }
 }

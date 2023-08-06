@@ -15,3 +15,8 @@ function sortable($label, $column = null)
 
     return "<a class='sortable {$direction}' href='{$url}'>{$label}</a>";
 }
+
+function getUndoRoute($name, $resource)
+{
+    return request()->missing('undo') ? route($name, [$resource->id, 'undo' => true]) : null;
+}

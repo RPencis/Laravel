@@ -41,6 +41,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('contacts.force-delete');
 
     Route::resource('/companies', CompanyController::class);
+    Route::delete('/companies/{company}/restore', [CompanyController::class, 'restore'])
+        ->withTrashed()
+        ->name('companies.restore');
+    Route::delete('/companies/{company}/force-delete', [CompanyController::class, 'forceDelete'])
+        ->withTrashed()
+        ->name('companies.force-delete');
 });
 
 Route::resources([

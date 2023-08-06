@@ -11,6 +11,7 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,4 +60,9 @@ Route::resource('/contacts.notes', ContactNoteController::class)
 
 Route::fallback(function () {
     return "<h1>Sorry, the page does not exist</h1>";
+});
+
+
+Route::get('/download', function(){
+    return Storage::download('myfile.txt');
 });

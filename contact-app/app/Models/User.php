@@ -49,6 +49,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'password' => 'hashed',
     ];
 
+    // protected $with = ["contacts", "companies"];//! place them here only if they are required !
+
     public function companies() {
         return $this->hasMany(Company::class);
     }

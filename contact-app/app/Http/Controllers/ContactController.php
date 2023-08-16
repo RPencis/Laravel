@@ -28,6 +28,7 @@ class ContactController extends Controller
             ->allowedFilters('company_id')
             ->allowedSearch('first_name','last_name','email')
             ->forUser(auth()->user())
+            ->with("company")//eager load relationship model
             ->paginate(10);
 
         //manual pagination

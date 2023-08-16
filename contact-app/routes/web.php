@@ -10,6 +10,7 @@ use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\WelcomeController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
@@ -71,4 +72,93 @@ Route::fallback(function () {
 
 Route::get('/download', function(){
     return Storage::download('myfile.txt');
+});
+
+Route::get('/eagerload-multiple', function(){
+    $users = User::with(["companies","contacts"])//eager load multiple relationship model
+    ->get();
+
+    foreach($users as $user){
+        echo $user->name . ": ";
+        echo $user->companies->count() ." companies, " .$user->contacts->count() . " contacts<br>";
+    }
+});
+
+Route::get('/eagerload-nested', function(){
+    $users = User::with(["companies","companies.contacts"])->get();//nested relationship. since companies ar linked to contacts
+
+    foreach($users as $user){
+        echo $user->name . "<br />";
+        foreach($user->companies as $company){
+            echo $company->name . " has ". $company->contacts->count(). " contacts <br />";
+        }
+        echo "<br />";
+    }
+});
+
+Route::get('/eagerload-constraint', function(){
+    $users = User::with(["companies" => function($query) {
+        $query->where('email','like','%.org');//filtering the relationship data
+    }])->get();
+
+    foreach($users as $user){
+        echo $user->name . "<br />";
+        foreach($user->companies as $company){
+            echo $company->email . "<br />";
+        }
+        echo "<br />";
+    }
+});
+
+Route::get('/eagerload-lazy', function(){
+    $users = User::get();
+    $users->load(['companies' => function($query){
+        $query->orderBy('name');
+    }]);
+    foreach($users as $user){
+        echo $user->name . "<br />";
+        foreach($user->companies as $company){
+            echo $company->name . "<br />";
+        }
+        echo "<br />";
+    }
+});
+
+Route::get('/eagerload-default', function(){
+    $users = User::without('contacts')->get();
+    
+    foreach($users as $user){
+        echo $user->name . "<br />";
+        foreach($user->companies as $company){
+            echo $company->email . "<br />";
+        }
+        echo "<br />";
+    }
+});
+
+Route::get('/count-models', function(){
+    //! withCount() HAS TO BE AFTER THE SELECT METHOD
+    // $users = User::withCount([
+    //     'contacts as contacts_number',
+    //     'companies as companies_count_end_with_gmail' => function($query){
+    //         $query->where('email','like','%@gmail.com');
+    //     }
+    //     ])->get();
+    
+    // foreach($users as $user){
+    //     echo $user->name . "<br />";
+    //     echo $user->companies_count_end_with_gmail ." companies<br />";
+    //     echo $user->contacts_number ." contacts<br />";
+    //     echo "<br />";
+    // }
+    
+    $users = User::get();
+    $users->loadCount(['companies'=> function($query){
+            $query->where('email','like','%@gmail.com');
+    }]);
+    foreach($users as $user){
+        echo $user->name . "<br />";
+        echo $user->companies_count ." companies<br />";
+        echo "<br />";
+    }
 });

@@ -18,8 +18,13 @@ class DatabaseSeeder extends Seeder
         $images = Storage::allFiles('images');
         foreach($images as $image){
             Image::factory()->create(
-                ['file' => $image]
+                [
+                    'file' => $image,
+                    'dimension' => Image::getDimension($image)
+                ]
             );
         }
     }
+
+    
 }

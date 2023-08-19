@@ -67,4 +67,12 @@ class Image extends Model
             Storage::delete($image->file);
         });
     }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+
+    public function uploadDate(){
+        return $this->created_at->diffForHumans();
+    }
 }

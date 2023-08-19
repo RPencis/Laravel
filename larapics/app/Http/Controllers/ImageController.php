@@ -10,7 +10,7 @@ class ImageController extends Controller
 {
     public function index(){
         $images = Image::
-        // published()->
+        published()->
         latest()->paginate(15);
 
         return view('image.index', compact('images'));
@@ -31,10 +31,15 @@ class ImageController extends Controller
     {
         return view("image.edit", compact('image'));
     }
-
     public function update(Image $image, ImageRequest $request)
     {
         $image->update($request->getData());
         return to_route('images.index')->with('message', "Image has been updated successfully");
     }
+    public function destroy(Image $image)
+    {
+        $image->delete();
+        return to_route('images.index')->with('message', "Image has been removed successfully");
+    }
+
 }

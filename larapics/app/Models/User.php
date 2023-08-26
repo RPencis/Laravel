@@ -55,4 +55,14 @@ class User extends Authenticatable
         $imagesCount = $this->images()->published()->count();
         return $imagesCount . ' ' . str('image')->plural($imagesCount);
     }
+
+    public  function social(){
+        return $this->hasOne(Social::class)->withDefault();
+    }
+    // public  function recentSocial(){
+    //     return $this->hasOne(Social::class)->latestOfMany();
+    // }
+    // public  function socialPrioriy(){
+    //     return $this->hasOne(Social::class)->ofMany('priority','min');
+    // }
 }

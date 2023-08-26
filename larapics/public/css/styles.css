@@ -134,3 +134,7 @@ p.lead {
 color: #f7f7f7;
 font-size: 18px;
 }
+
+.height-60{
+  min-height: 60vh;
+}

@@ -46,6 +46,28 @@ class User extends Authenticatable
         'role' => Role::class
     ];
 
+    public  function updateSettings($data) {
+        $this->updateSocialProfile($data['social']);
+        $this->updateOptions($data['options']);
+    }
+
+    protected function updateSocialProfile($social) {
+        // if($this->social()->exists()){
+        //     $this->social()->update($social);
+        // }else{
+        //     $this->social()->create($social);
+        // }
+
+        Social::updateOrCreate(
+            ['user_id' => $this->id],
+            $social
+        );
+    }
+
+    protected function updateOptions($options) {
+        $this->setting()->update($options);
+    }
+
     public function images(){
         return $this->hasMany(Image::class);
     }
@@ -56,9 +78,26 @@ class User extends Authenticatable
         return $imagesCount . ' ' . str('image')->plural($imagesCount);
     }
 
-    public  function social(){
+    public function social(){
         return $this->hasOne(Social::class)->withDefault();
     }
+
+    public function setting(){
+        return $this->hasOne(Setting::class)->withDefault();
+    }
+
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            $user->setting()->create([
+                "email_notification" => [
+                    "new_comment" => 1,
+                    "new_image" => 1
+                ]
+            ]);
+        });
+    }
+
     // public  function recentSocial(){
     //     return $this->hasOne(Social::class)->latestOfMany();
     // }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\ListImageController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\ShowAuthorController;
 use App\Http\Controllers\ShowImageController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -27,6 +28,8 @@ Route::view('/test-blade','test');
 
 Route::get('/account/settings',[SettingController::class,'edit'])->name('settings.edit');
 Route::put('/account/settings',[SettingController::class,'update'])->name('settings.update');
+
+Route::get('/@{user:username}', ShowAuthorController::class)->name('author.show');
 
 Auth::routes();
 

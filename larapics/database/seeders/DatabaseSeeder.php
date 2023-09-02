@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Comment;
 use App\Models\Image;
 use App\Models\Social;
 use App\Models\User;
@@ -26,10 +27,18 @@ class DatabaseSeeder extends Seeder
                 ]
             );
         }
+
+        Image::find([1,3,5])->each(function($image){
+            User::where('id','!=', $image->user_id)->get()
+            ->each(function($user) use ($image){
+                $image->comments()->save(Comment::factory()->make([
+                    'user_id' => $user->id
+                ]));
+            });
+        });
+
         User::find([2,4,6])->each(function($user){
             $user->social()->save(Social::factory()->make());
         });
     }
-
-    
 }

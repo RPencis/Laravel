@@ -8,6 +8,7 @@ use App\Enums\Role;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -23,6 +24,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'username'.
+        'city',
+        'country',
+        'profile_image',
+        'cover_image',
+        'about_me'
     ];
 
     /**
@@ -46,7 +53,23 @@ class User extends Authenticatable
         'role' => Role::class
     ];
 
+    public function profileImageUrl()
+    {
+        return Storage::url($this->profile_image ? $this->profile_image : "users/user-default.png");
+    }
+
+    public function coverImageUrl()
+    {
+        return Storage::url($this->cover_image);
+    }
+
+    public function hasCoverImage()
+    {
+        return !!$this->cover_image;
+    }
+
     public  function updateSettings($data) {
+        $this->update($data['user']);
         $this->updateSocialProfile($data['social']);
         $this->updateOptions($data['options']);
     }
@@ -104,4 +127,31 @@ class User extends Authenticatable
     // public  function socialPrioriy(){
     //     return $this->hasOne(Social::class)->ofMany('priority','min');
     // }
+
+    public static function makeDirectory() {
+        $directory = 'users';
+
+        Storage::makeDirectory($directory);
+
+        return $directory;
+    }
+
+    public function url()
+    {
+        return route('author.show', $this->username);
+    }
+
+    public function inlineProfile()
+    {
+        return collect([
+            $this->name,
+            trim(join("/", [$this->city, $this->country]), "/"),
+            "Member since " . $this->created_at->toFormattedDateString(),
+            $this->getImagesCount()
+        ])->filter()->implode(" • ");
+    }
+
+    public function comments() {
+        return $this->hasMany(Comment::class);
+    }
 }

@@ -27,7 +27,7 @@ class Image extends Model
         return $width .'x'. $height;
     }
 
-    public function scopePublished(Builder $query){
+    public function scopePublished($query){
         return $query->where('is_published', true);
     }
 
@@ -82,5 +82,9 @@ class Image extends Model
 
     public function uploadDate(){
         return $this->created_at->diffForHumans();
+    }
+
+    public function comments() {
+        return $this->hasMany(Comment::class);
     }
 }

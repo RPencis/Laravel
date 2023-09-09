@@ -53,6 +53,7 @@
                         @endif
                     @else
                         <li class="nav-item"><a href="{{route('images.index')}}" class="nav-link {{ request()->is('account/images*') ? 'active' : ''}} ">Images</a></li>
+                        <li class="nav-item"><a href="{{route('comments.index')}}" class="nav-link {{ request()->is('comments/images*') ? 'active' : ''}} ">Comments</a></li>
                         <li class="nav-item"><a href="#" class="nav-link {{ request()->is('account/favorites*') ? 'active' : ''}}">Favorites</a></li>
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
@@ -95,6 +96,7 @@
     <script async src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"
         integrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+d3KnQxudP/mGPkzpZSTYykLBNsZEnG2D9G/X/+7D"
         crossorigin="anonymous"></script>
+    @stack('scripts')
 </body>
 
 </html>

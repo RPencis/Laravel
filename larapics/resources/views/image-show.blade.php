@@ -5,8 +5,13 @@
                 <div class="image-container">
                     <img src="{{ $image->fileUrl() }}" title="{{ $image->title }}" class="img-fluid" />
                 </div>
-                {{-- @include('image._related-images')
-                @include('image._comments') --}}
+                {{-- @include('image._related-images') --}}
+                @if ($disableComments)
+                    <p class="text-muted mt-3">Comments dissabled by author</p>
+                @else
+                    @include('_comments')    
+                @endif
+                
             </div>
             <div class="col-md-3">
                 <div class="d-flex align-items-center mb-3">

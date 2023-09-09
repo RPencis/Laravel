@@ -17,7 +17,8 @@ class CommentFactory extends Factory
     public function definition(): array
     {
         return [
-            'body' => $this->faker->paragraph()
+            'body' => $this->faker->paragraph(),
+            'approved' => rand(0,1) === 1
         ];
     }
 }

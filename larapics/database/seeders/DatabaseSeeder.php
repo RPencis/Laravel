@@ -40,5 +40,7 @@ class DatabaseSeeder extends Seeder
         User::find([2,4,6])->each(function($user){
             $user->social()->save(Social::factory()->make());
         });
+
+        User::find(1)->update(['email' => 'test@example.com']);
     }
 }
